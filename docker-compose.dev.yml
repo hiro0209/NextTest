@@ -1,0 +1,48 @@
+version: "3"
+services:
+  rdb:
+    container_name: nexttest-rdb
+    build: ./db/rdb
+    image: nexttest-rdb
+    env_file: ./db/rdb/postgres.env
+    environment:
+      - TZ=UTC
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db/rdb/data:/var/lib/postgresql/data
+    networks:
+      - default
+
+  nosql:
+    container_name: nexttest-nosql
+    build: ./db/nosql
+    image: nexttest-nosql
+    env_file: ./db/nosql/couchdb.env
+    environment:
+      - TZ=UTC
+    ports:
+      - "5984:5984"
+    volumes:
+      - ./db/nosql/data:/opt/couchdb/data
+    networks:
+      - default
+
+  app:
+    container_name: nexttest-app
+    tty: true
+    build:
+      context: ./app
+      dockerfile: Dockerfile.dev
+    image: nexttest-app
+    environment:
+      - TZ=UTC
+      - WATCHPACK_POLLING=true
+    volumes:
+      - ./app:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+      - "24678:24678"
+    networks:
+      - default

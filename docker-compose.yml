@@ -1,0 +1,19 @@
+version: "3"
+services:
+  app:
+    container_name: nexttest-app
+    tty: true
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    image: nexttest-app
+    environment:
+      - TZ=UTC
+    volumes:
+      - ./app:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+      - "24678:24678"
+    networks:
+      - default
